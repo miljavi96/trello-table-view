@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cards grouped by list</title>
+    <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css" />
+    <style>
+      body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 16px; color: #172b4d; }
+      section { margin-bottom: 28px; }
+      h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: #5e6c84; margin: 0 0 8px; }
+      .count { background: #dfe1e6; border-radius: 10px; padding: 1px 8px; font-size: 12px; margin-left: 6px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ebecf0; font-size: 14px; }
+      th { color: #5e6c84; font-weight: 600; font-size: 12px; }
+      .empty { color: #a5adba; font-style: italic; }
+      .error { color: #c9372c; }
+    </style>
+  </head>
+  <body>
+    <div id="root">Loading&hellip;</div>
+
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <script>
+      const t = window.TrelloPowerUp.iframe();
+      const root = document.getElementById('root');
+
+      const escapeHtml = (value) =>
+        String(value).replace(/[&<>"']/g, (char) => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[char]);
+
+      const formatDue = (due) => (due ? new Date(due).toLocaleDateString() : '—');
+
+      const renderList = (list, cards) => {
+        const rows = cards.length
+          ? cards
+              .map(
+                (card) => `
+                <tr>
+                  <td>${escapeHtml(card.name)}</td>
+                  <td>${formatDue(card.due)}</td>
+                  <td>${card.labels.map((label) => escapeHtml(label.name || label.color)).join(', ')}</td>
+                </tr>`
+              )
+              .join('')
+          : '<tr><td colspan="3" class="empty">No cards</td></tr>';
+
+        return `
+          <section>
+            <h2>${escapeHtml(list.name)}<span class="count">${cards.length}</span></h2>
+            <table>
+              <thead>
+                <tr><th>Card</th><th>Due</th><th>Labels</th></tr>
+              </thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </section>`;
+      };
+
+      Promise.all([
+        t.lists('id', 'name'),
+        t.cards('id', 'name', 'idList', 'due', 'labels')
+      ])
+        .then(([lists, cards]) => {
+          const byList = new Map(lists.map((list) => [list.id, []]));
+          cards.forEach((card) => byList.get(card.idList)?.push(card));
+
+          root.innerHTML = lists
+            .map((list) => renderList(list, byList.get(list.id) ?? []))
+            .join('');
+        })
+        .catch((error) => {
+          root.innerHTML = `<p class="error">Could not load board data: ${escapeHtml(error.message)}</p>`;
+        });
+    </script>
+  </body>
+</html>

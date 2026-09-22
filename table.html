@@ -6,15 +6,61 @@
     <title>Cards grouped by list</title>
     <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css" />
     <style>
-      body { font-family: -apple-system, "Segoe UI", sans-serif; margin: 0; padding: 16px; color: #172b4d; }
+      :root {
+        --tv-bg: #ffffff;
+        --tv-text: #172b4d;
+        --tv-subtle: #5e6c84;
+        --tv-border: #ebecf0;
+        --tv-chip-bg: #dfe1e6;
+        --tv-chip-text: #44546f;
+        --tv-muted: #a5adba;
+        --tv-error: #c9372c;
+      }
+
+      html[data-color-mode='dark'] {
+        --tv-bg: #1d2125;
+        --tv-text: #b6c2cf;
+        --tv-subtle: #9fadbc;
+        --tv-border: #2c333a;
+        --tv-chip-bg: #2c333a;
+        --tv-chip-text: #b6c2cf;
+        --tv-muted: #738496;
+        --tv-error: #f87168;
+      }
+
+      body {
+        font-family: -apple-system, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 16px;
+        background: var(--tv-bg);
+        color: var(--tv-text);
+      }
       section { margin-bottom: 28px; }
-      h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .04em; color: #5e6c84; margin: 0 0 8px; }
-      .count { background: #dfe1e6; border-radius: 10px; padding: 1px 8px; font-size: 12px; margin-left: 6px; }
+      h2 {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        color: var(--tv-subtle);
+        margin: 0 0 8px;
+      }
+      .count {
+        background: var(--tv-chip-bg);
+        color: var(--tv-chip-text);
+        border-radius: 10px;
+        padding: 1px 8px;
+        font-size: 12px;
+        margin-left: 6px;
+      }
       table { width: 100%; border-collapse: collapse; }
-      th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #ebecf0; font-size: 14px; }
-      th { color: #5e6c84; font-weight: 600; font-size: 12px; }
-      .empty { color: #a5adba; font-style: italic; }
-      .error { color: #c9372c; }
+      th, td {
+        text-align: left;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--tv-border);
+        font-size: 14px;
+      }
+      th { color: var(--tv-subtle); font-weight: 600; font-size: 12px; }
+      .empty { color: var(--tv-muted); font-style: italic; }
+      .error { color: var(--tv-error); }
     </style>
   </head>
   <body>
@@ -24,6 +70,20 @@
     <script>
       const t = window.TrelloPowerUp.iframe();
       const root = document.getElementById('root');
+
+      // Trello sets data-color-mode on <html>; this keeps it in sync as a fallback.
+      const applyTheme = (theme) => {
+        if (theme) {
+          document.documentElement.setAttribute('data-color-mode', theme);
+        }
+      };
+
+      const context = t.getContext();
+      applyTheme(context.theme || context.initialTheme);
+
+      if (typeof t.subscribeToThemeChanges === 'function') {
+        t.subscribeToThemeChanges(() => applyTheme(t.getContext().theme));
+      }
 
       const escapeHtml = (value) =>
         String(value).replace(/[&<>"']/g, (char) => ({

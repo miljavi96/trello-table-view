@@ -2,9 +2,14 @@ const t = window.TrelloPowerUp.iframe();
 
 const PREFS_KEY = 'tableViewPrefs';
 
+// Bumped whenever a new column ships, so stored preferences pick it up
+// instead of silently hiding it from members who already saved a layout.
+const PREFS_VERSION = 2;
+
 const DEFAULT_PREFS = {
+  version: PREFS_VERSION,
   groupByList: true,
-  columns: ['name', 'due', 'labels', 'members'],
+  columns: ['rowNumber', 'name', 'due', 'labels', 'members'],
   hiddenLists: [],
   sortKey: 'name',
   sortDir: 'asc'
@@ -56,6 +61,15 @@ const baseColor = (color) => String(color || 'none').split('_')[0];
 /* ---------- columns ---------- */
 
 const COLUMNS = [
+  {
+    // Positional, not a card field: it numbers the rows as they are painted,
+    // so sorting the other columns never changes it.
+    key: 'rowNumber',
+    label: 'N°',
+    menuLabel: 'Row number',
+    sortable: false,
+    render: (card, index) => `<span class="row-number">${index + 1}</span>`
+  },
   {
     key: 'idShort',
     label: '#',
@@ -137,7 +151,8 @@ const matchesQuery = (card) => {
 };
 
 const sortCards = (subset) => {
-  const column = columnByKey.get(prefs.sortKey) || columnByKey.get('name');
+  const chosen = columnByKey.get(prefs.sortKey);
+  const column = chosen && chosen.sortValue ? chosen : columnByKey.get('name');
   const direction = prefs.sortDir === 'desc' ? -1 : 1;
 
   return [...subset].sort((a, b) => {
@@ -154,6 +169,9 @@ const sortCards = (subset) => {
 const renderHead = () => {
   const cells = visibleColumns()
     .map((column) => {
+      if (column.sortable === false) {
+        return `<th class="static">${escapeHtml(column.label)}</th>`;
+      }
       const active = prefs.sortKey === column.key;
       const arrow = active
         ? `<span class="arrow">${prefs.sortDir === 'asc' ? '▲' : '▼'}</span>`
@@ -171,8 +189,8 @@ const renderRows = (subset) => {
   }
   return subset
     .map(
-      (card) =>
-        `<tr>${columns.map((column) => `<td>${column.render(card)}</td>`).join('')}</tr>`
+      (card, index) =>
+        `<tr>${columns.map((column) => `<td>${column.render(card, index)}</td>`).join('')}</tr>`
     )
     .join('');
 };
@@ -237,6 +255,33 @@ const syncControls = () => {
 };
 
 /* ---------- preferences ---------- */
+
+// Columns introduced in each preferences version. A stored payload only gains
+// the columns that shipped after it was written, so a column the member
+// deliberately turned off is never switched back on.
+const COLUMNS_ADDED_IN = {
+  2: ['rowNumber']
+};
+
+const migratePrefs = (stored) => {
+  const from = Number(stored.version) || 1;
+  if (from >= PREFS_VERSION) return stored;
+
+  const known = new Set(COLUMNS.map((column) => column.key));
+  const selected = new Set(
+    (stored.columns || DEFAULT_PREFS.columns).filter((key) => known.has(key))
+  );
+
+  for (let version = from + 1; version <= PREFS_VERSION; version += 1) {
+    (COLUMNS_ADDED_IN[version] || []).forEach((key) => selected.add(key));
+  }
+
+  return {
+    ...stored,
+    version: PREFS_VERSION,
+    columns: COLUMNS.map((column) => column.key).filter((key) => selected.has(key))
+  };
+};
 
 const savePrefs = () => {
   // Preferences are a convenience: a failed write must never break the view.
@@ -339,7 +384,9 @@ Promise.all([
     lists = loadedLists;
     cards = loadedCards;
     listNames = new Map(lists.map((list) => [list.id, list.name]));
-    prefs = { ...DEFAULT_PREFS, ...loadedPrefs };
+    // migratePrefs must see the raw stored payload: merging the defaults in
+    // first would hand it a current version number and skip the migration.
+    prefs = { ...DEFAULT_PREFS, ...migratePrefs(loadedPrefs || {}) };
 
     syncControls();
     render();

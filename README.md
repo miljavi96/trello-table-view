@@ -8,15 +8,17 @@ available.
 
 - Group by list, or one flat table across the whole board.
 - Filter across card name, list, labels, members and card number.
-- Choose which columns to show: card number, card, list, due date, labels,
-  members.
+- A row number column (`N°`) that always counts 1..n in painted order and is
+  never reordered by sorting.
+- Choose which columns to show: row number, card number, card, list, due date,
+  labels, members.
 - Choose which lists to show, with All / None shortcuts.
 - Sort by any column; click a header again to flip the direction.
 - Label colors match Trello's palette, including `_light` / `_dark` shades.
 - Overdue cards are highlighted; cards marked complete are not.
 - Follows Trello's light and dark color theme.
 - Preferences persist per board, private to the member, through Trello's
-  own storage API.
+  own storage API, and are migrated forward when a new column ships.
 
 ## Files
 

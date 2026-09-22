@@ -223,3 +223,14 @@ td a:hover { color: var(--tv-accent); text-decoration: underline; }
 .label[data-color='lime']   { background: #94c748; color: #37471f; }
 .label[data-color='pink']   { background: #e774bb; color: #50253f; }
 .label[data-color='black']  { background: #8590a2; color: #091e42; }
+
+th.static { cursor: default; }
+th.static:hover { color: var(--tv-subtle); }
+
+.row-number {
+  display: inline-block;
+  min-width: 2ch;
+  color: var(--tv-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

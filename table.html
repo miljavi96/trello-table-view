@@ -5,138 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cards grouped by list</title>
     <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css" />
-    <style>
-      :root {
-        --tv-bg: #ffffff;
-        --tv-text: #172b4d;
-        --tv-subtle: #5e6c84;
-        --tv-border: #ebecf0;
-        --tv-chip-bg: #dfe1e6;
-        --tv-chip-text: #44546f;
-        --tv-muted: #a5adba;
-        --tv-error: #c9372c;
-      }
-
-      html[data-color-mode='dark'] {
-        --tv-bg: #1d2125;
-        --tv-text: #b6c2cf;
-        --tv-subtle: #9fadbc;
-        --tv-border: #2c333a;
-        --tv-chip-bg: #2c333a;
-        --tv-chip-text: #b6c2cf;
-        --tv-muted: #738496;
-        --tv-error: #f87168;
-      }
-
-      body {
-        font-family: -apple-system, "Segoe UI", sans-serif;
-        margin: 0;
-        padding: 16px;
-        background: var(--tv-bg);
-        color: var(--tv-text);
-      }
-      section { margin-bottom: 28px; }
-      h2 {
-        font-size: 15px;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        color: var(--tv-subtle);
-        margin: 0 0 8px;
-      }
-      .count {
-        background: var(--tv-chip-bg);
-        color: var(--tv-chip-text);
-        border-radius: 10px;
-        padding: 1px 8px;
-        font-size: 12px;
-        margin-left: 6px;
-      }
-      table { width: 100%; border-collapse: collapse; }
-      th, td {
-        text-align: left;
-        padding: 8px 10px;
-        border-bottom: 1px solid var(--tv-border);
-        font-size: 14px;
-      }
-      th { color: var(--tv-subtle); font-weight: 600; font-size: 12px; }
-      .empty { color: var(--tv-muted); font-style: italic; }
-      .error { color: var(--tv-error); }
-    </style>
+    <link rel="stylesheet" href="./table.css" />
   </head>
   <body>
-    <div id="root">Loading&hellip;</div>
+    <header class="toolbar">
+      <input id="search" class="search" type="search" placeholder="Filter cards&hellip;" autocomplete="off" />
+
+      <details class="menu" id="menu-columns">
+        <summary>Columns</summary>
+        <div class="menu-body" id="columns-body"></div>
+      </details>
+
+      <details class="menu" id="menu-lists">
+        <summary>Lists</summary>
+        <div class="menu-body">
+          <div class="menu-actions">
+            <button type="button" data-lists="all">All</button>
+            <button type="button" data-lists="none">None</button>
+          </div>
+          <div id="lists-body"></div>
+        </div>
+      </details>
+
+      <label class="toggle">
+        <input id="group-by-list" type="checkbox" />
+        Group by list
+      </label>
+
+      <span class="spacer"></span>
+      <span id="summary" class="summary"></span>
+      <button id="reset" type="button" class="reset">Reset</button>
+    </header>
+
+    <main id="root" class="content">Loading&hellip;</main>
 
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
-    <script>
-      const t = window.TrelloPowerUp.iframe();
-      const root = document.getElementById('root');
-
-      // Trello sets data-color-mode on <html>; this keeps it in sync as a fallback.
-      const applyTheme = (theme) => {
-        if (theme) {
-          document.documentElement.setAttribute('data-color-mode', theme);
-        }
-      };
-
-      const context = t.getContext();
-      applyTheme(context.theme || context.initialTheme);
-
-      if (typeof t.subscribeToThemeChanges === 'function') {
-        t.subscribeToThemeChanges(() => applyTheme(t.getContext().theme));
-      }
-
-      const escapeHtml = (value) =>
-        String(value).replace(/[&<>"']/g, (char) => ({
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        })[char]);
-
-      const formatDue = (due) => (due ? new Date(due).toLocaleDateString() : '—');
-
-      const renderList = (list, cards) => {
-        const rows = cards.length
-          ? cards
-              .map(
-                (card) => `
-                <tr>
-                  <td>${escapeHtml(card.name)}</td>
-                  <td>${formatDue(card.due)}</td>
-                  <td>${card.labels.map((label) => escapeHtml(label.name || label.color)).join(', ')}</td>
-                </tr>`
-              )
-              .join('')
-          : '<tr><td colspan="3" class="empty">No cards</td></tr>';
-
-        return `
-          <section>
-            <h2>${escapeHtml(list.name)}<span class="count">${cards.length}</span></h2>
-            <table>
-              <thead>
-                <tr><th>Card</th><th>Due</th><th>Labels</th></tr>
-              </thead>
-              <tbody>${rows}</tbody>
-            </table>
-          </section>`;
-      };
-
-      Promise.all([
-        t.lists('id', 'name'),
-        t.cards('id', 'name', 'idList', 'due', 'labels')
-      ])
-        .then(([lists, cards]) => {
-          const byList = new Map(lists.map((list) => [list.id, []]));
-          cards.forEach((card) => byList.get(card.idList)?.push(card));
-
-          root.innerHTML = lists
-            .map((list) => renderList(list, byList.get(list.id) ?? []))
-            .join('');
-        })
-        .catch((error) => {
-          root.innerHTML = `<p class="error">Could not load board data: ${escapeHtml(error.message)}</p>`;
-        });
-    </script>
+    <script src="./table.js"></script>
   </body>
 </html>

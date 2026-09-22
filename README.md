@@ -1,8 +1,22 @@
 # Trello Table View Power-Up
 
-A custom Trello Power-Up that renders the board's cards as tables grouped by
-list. Works on the Trello Free plan, where the native Table view is not
+A custom Trello Power-Up that renders the board's cards as sortable, filterable
+tables. Works on the Trello Free plan, where the native Table view is not
 available.
+
+## Features
+
+- Group by list, or one flat table across the whole board.
+- Filter across card name, list, labels, members and card number.
+- Choose which columns to show: card number, card, list, due date, labels,
+  members.
+- Choose which lists to show, with All / None shortcuts.
+- Sort by any column; click a header again to flip the direction.
+- Label colors match Trello's palette, including `_light` / `_dark` shades.
+- Overdue cards are highlighted; cards marked complete are not.
+- Follows Trello's light and dark color theme.
+- Preferences persist per board, private to the member, through Trello's
+  own storage API.
 
 ## Files
 
@@ -10,7 +24,9 @@ available.
 | --- | --- |
 | `index.html` | iframe connector Trello loads in the background |
 | `client.js` | registers the `board-buttons` capability |
-| `table.html` | the modal UI: one table per list |
+| `table.html` | modal markup: toolbar and table container |
+| `table.css` | theme tokens and layout |
+| `table.js` | data loading, filtering, sorting, preferences |
 | `icon-black.svg` / `icon-white.svg` | board button icons (light / dark chrome) |
 
 ## Setup
@@ -26,10 +42,15 @@ available.
 6. On the board: **Power-Ups > Custom**, then enable this Power-Up. A **Table**
    button appears in the board header.
 
+`BASE_URL` in `client.js` must match the published Pages URL.
+
 ## Notes
 
 - A Power-Up cannot replace the board view; Trello exposes no such hook. The
   table opens in a fullscreen modal on top of the board.
-- `t.lists()` and `t.cards()` return promises. Cards carry `idList`, which is
-  what the grouping is built from.
+- Board button icons are rendered by Trello on its own page, so those URLs must
+  be **absolute**. The modal `url` is loaded by the Power-Up's own iframe, so a
+  relative path is correct there.
 - `t.cards()` only returns visible cards: not archived, and in open lists.
+- Preferences use `t.set('board', 'private', ...)` rather than `localStorage`,
+  which browsers increasingly partition or block inside third-party iframes.

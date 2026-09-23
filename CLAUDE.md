@@ -151,7 +151,8 @@ node tests/smoke.js
 It covers: row numbers stable under asc and desc sorting, the `N°` header not
 being sortable, migration preserving previous choices, grouping, label shade
 normalization, overdue vs. complete, the card counter, locale key parity and
-Spanish rendering, and survival when the localizer never loads.
+Spanish rendering, survival when the localizer never loads, and the search
+debounce.
 
 The translation-coverage assertion runs **last on purpose**. It inspects the
 keys every locale actually requested, so moving it earlier silently narrows it

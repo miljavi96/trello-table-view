@@ -26,6 +26,11 @@ const PREFS_KEY = 'tableViewPrefs';
 // instead of silently hiding it from members who already saved a layout.
 const PREFS_VERSION = 2;
 
+// Typing used to repaint the entire board on every keystroke. On a 700-card
+// board that is hundreds of rows rebuilt per character typed; this collapses
+// a burst of typing into a single render.
+const SEARCH_DEBOUNCE_MS = 150;
+
 const DEFAULT_PREFS = {
   version: PREFS_VERSION,
   groupByList: true,
@@ -51,6 +56,7 @@ let lists = [];
 let cards = [];
 let listNames = new Map();
 let query = '';
+let searchTimer = null;
 
 /* ---------- helpers ---------- */
 
@@ -344,8 +350,12 @@ const updatePrefs = (patch) => {
 /* ---------- events ---------- */
 
 dom.search.addEventListener('input', (event) => {
-  query = event.target.value.trim().toLowerCase();
-  render();
+  const next = event.target.value.trim().toLowerCase();
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    query = next;
+    render();
+  }, SEARCH_DEBOUNCE_MS);
 });
 
 dom.groupByList.addEventListener('change', (event) => {
@@ -399,6 +409,7 @@ dom.root.addEventListener('click', (event) => {
 });
 
 dom.reset.addEventListener('click', () => {
+  clearTimeout(searchTimer);
   query = '';
   dom.search.value = '';
   prefs = { ...DEFAULT_PREFS };

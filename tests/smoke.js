@@ -36,6 +36,8 @@ const CARDS = [
     dueComplete: true, labels: [{ name: '', color: 'green' }], members: [], url: 'https://trello.com/c/3' }
 ];
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // options.noLocalizer reproduces a Power-Up whose strings never loaded: no
 // TrelloPowerUp.util at all, and a localizeKey that throws.
 const run = (storedPrefs, locale, options) =>
@@ -46,8 +48,12 @@ const run = (storedPrefs, locale, options) =>
     const makeEl = () => ({
       innerHTML: '', textContent: '', value: '', checked: false,
       dataset: {}, attributes: {},
-      addEventListener() {},
-      setAttribute(key, value) { this.attributes[key] = value; }
+      _listeners: {},
+      addEventListener(type, fn) {
+        (this._listeners[type] = this._listeners[type] || []).push(fn);
+      },
+      setAttribute(key, value) { this.attributes[key] = value; },
+      fire(type, event) { (this._listeners[type] || []).forEach((fn) => fn(event)); }
     });
 
     const els = {};
@@ -107,7 +113,7 @@ const run = (storedPrefs, locale, options) =>
 
     vm.runInNewContext(SOURCE, {
       window, document, console, Promise, Map, Set, Date, Number, String,
-      Boolean, Array, Object, JSON
+      Boolean, Array, Object, JSON, setTimeout, clearTimeout
     });
 
     setTimeout(
@@ -202,6 +208,27 @@ const check = (name, cond) => { if (!cond) failed++; console.log((cond ? 'PASS  
     'the placeholder is left to the markup',
     dead.placeholderNodes[0].attributes.placeholder === undefined
   );
+
+  console.log('--- search debounce ---');
+  const typed = await run(null);
+  const before = typed.els.root.innerHTML;
+  typed.els.search.fire('input', { target: { value: 'Zeta' } });
+  check('does not repaint on the keystroke itself', typed.els.root.innerHTML === before);
+
+  await wait(250);
+  const after = typed.els.root.innerHTML;
+  check('repaints once the typing settles', after !== before);
+  check('filter actually applied', after.includes('Zeta task') && !after.includes('Alpha task'));
+  check('counter reflects the filter', typed.els.summary.textContent === '1 of 4 cards');
+
+  const burst = await run(null);
+  const baseline = burst.els.root.innerHTML;
+  ['Z', 'Ze', 'Zet', 'Zeta'].forEach((value) =>
+    burst.els.search.fire('input', { target: { value } })
+  );
+  check('a burst of keystrokes repaints nothing yet', burst.els.root.innerHTML === baseline);
+  await wait(250);
+  check('the burst collapses into one repaint', burst.els.summary.textContent === '1 of 4 cards');
 
   // Last on purpose: every locale above has now been rendered, so this sees
   // the keys all of them actually asked for. Run it earlier and it only ever

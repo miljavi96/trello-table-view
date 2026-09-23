@@ -14,7 +14,7 @@ Copy the blocks below straight into the fields at <https://trello.com/apps/admin
 | Name | `Cardsheet` |
 | Iframe connector URL | `https://miljavi96.github.io/trello-table-view/index.html` |
 | Privacy policy URL | `https://miljavi96.github.io/trello-table-view/privacy.html` |
-| Support email | _to fill in — see checklist_ |
+| Support email | `miljavi96.mj@gmail.com` |
 | Capabilities | `board-buttons` |
 | Categories | Board Utilities / Reporting (pick the closest two offered) |
 
@@ -123,8 +123,8 @@ from the SISCOTIC board — use a demo board.
 
 Things only you can do:
 
-- [ ] Decide the support email address and put it in the admin portal **and**
-      in `privacy.html` (replace `REPLACE_WITH_SUPPORT_EMAIL`).
+- [ ] Set the support email in the admin portal to the same address already
+      in `privacy.html`: `miljavi96.mj@gmail.com`.
 - [ ] Confirm `Cardsheet` is actually free when you register it — a web search
       is not proof, the portal is.
 - [ ] Register the Power-Up at <https://trello.com/apps/admin> in a Workspace

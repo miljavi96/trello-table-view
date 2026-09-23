@@ -1,7 +1,15 @@
 # Public listing — submission kit
 
-Everything needed to submit **Cardsheet** to the Trello Power-Up directory.
-Copy the blocks below straight into the fields at <https://trello.com/apps/admin>.
+> **Do not paste this file into anything.** It is the checklist. The text that
+> goes into the portal lives in two separate files that can be pasted whole,
+> with nothing to pick out of them:
+>
+> | Portal field | File to paste |
+> | --- | --- |
+> | Overview | `listing/overview.txt` |
+> | Description | `listing/description.md` |
+
+This file records what to enter where, and what only a Workspace admin can do.
 
 > The product is named **Cardsheet**. The repository stays `trello-table-view`
 > and the connector URL never changes — renaming the repo would break the
@@ -53,75 +61,15 @@ Compete on the four things they cannot match:
 
 Every piece of copy below leads with those.
 
-## Overview
+## The copy itself
 
-> Plain text only — this field does not render markdown.
+Both files are paste-whole. Do not edit them down, and do not paste anything
+from this file instead.
 
-```
-See every card on your board as a sortable, filterable sheet. Group by list or
-view the whole board at once, choose which columns and lists to show, and sort
-by any column. Free, no account, and read-only: Cardsheet can never change your
-board. Your layout is remembered per board. Available in English and Spanish.
-```
-
-## Description
-
-> This field renders markdown.
-
-```markdown
-**Cardsheet turns your board into a sheet.**
-
-Boards are great for moving work along. They are less great when you need to
-scan two hundred cards and answer a question. Cardsheet gives you the other
-half of that: one screen, every card, sorted the way you need it.
-
-Enable it and it works. There is no account to create, nothing to authorize,
-and no paid tier waiting behind a feature.
-
-### What it does
-
-- **Group by list, or don't.** See a section per list, or one flat sheet across
-  the entire board.
-- **Filter as you type.** Search across card name, list, labels, members and
-  card number at once.
-- **Pick your columns.** Row number, card number, card, list, due date, labels
-  and members — show the ones you care about, hide the rest.
-- **Pick your lists.** Hide the lists that are noise, with All / None shortcuts.
-- **Sort by any column.** Click a header to sort, click it again to flip the
-  direction.
-- **Spot what's late.** Overdue cards are highlighted; cards marked complete
-  are not.
-- **A stable row number.** The `N°` column always counts 1..n in painted order,
-  so it never scrambles when you sort by something else.
-
-### Safe by design
-
-Cardsheet is **read-only**. It never creates, edits, moves, archives or deletes
-anything in Trello — there is no click in it that can damage a board. Card
-names link straight to the card when you do want to make a change.
-
-That also means there is nothing to undo, nothing to train your team on, and no
-reason to think twice before enabling it on a board that matters.
-
-### Built to stay out of your way
-
-- **Your layout is remembered** per board and private to you — columns, hidden
-  lists and sort order are all still there next time you open it.
-- **It follows your theme.** Light and dark, matching Trello.
-- **It speaks your language.** English and Spanish, picked up automatically
-  from your own Trello language setting.
-- **No account and no sign-up.** Enable it and it works.
-
-### Privacy
-
-Cardsheet has no server of its own. Board data is read in your browser to draw
-the sheet and is never sent anywhere. Your preferences are stored through
-Trello's own storage API, so they never leave Trello. No analytics, no cookies,
-no tracking.
-
-The source is public, so none of that has to be taken on trust:
-<https://github.com/miljavi96/trello-table-view>
-```
+- **Overview** → `listing/overview.txt`. One line, plain text; the portal says
+  "short one line overview" and does not render markdown.
+- **Description** → `listing/description.md`. Renders markdown; set the editor
+  at the bottom of the field to Markdown before pasting.
 
 ## Screenshots to capture
 

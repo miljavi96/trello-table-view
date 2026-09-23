@@ -34,6 +34,7 @@ available.
 | `strings/*.json` | one flat key/value file per locale |
 | `privacy.html` | privacy policy served alongside the Power-Up |
 | `icon-black.svg` / `icon-white.svg` | board button icons (light / dark chrome) |
+| `icon-app.svg` | 144x144 listing icon for the Power-Up directory |
 
 ## Setup
 

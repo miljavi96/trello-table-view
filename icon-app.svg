@@ -1,0 +1,16 @@
+<!--
+  Power-Up listing icon. The admin portal requires 144x144 served over https,
+  and accepts a single image: there is no light/dark pair here the way the
+  board button has. So this one carries its own background and has to stay
+  legible on a white directory card and on Trello's dark chrome alike.
+
+  Deliberately not Trello blue: listing guidelines reject visual assets that
+  lean on Trello's branding.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 144 144" width="144" height="144" role="img" aria-label="Cardsheet">
+  <rect width="144" height="144" rx="32" fill="#4F46E5"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="28" y="28" width="88" height="88" rx="10"/>
+    <path d="M28 57.3h88M28 86.7h88M57.3 28v88"/>
+  </g>
+</svg>

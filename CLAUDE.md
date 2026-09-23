@@ -57,7 +57,8 @@ Do not redo any of this; it is already set up.
 | `privacy.html` | privacy policy; a mandatory field of the public listing |
 | `LISTING.md` | submission kit for the Power-Up directory |
 | `tests/smoke.js` | headless render test with stubbed Trello + DOM |
-| `icon-*.svg` | board button icons, light and dark chrome |
+| `icon-black.svg` / `icon-white.svg` | board button icons, light and dark chrome |
+| `icon-app.svg` | 144x144 listing icon for the admin portal; carries its own background |
 
 ## Rules learned the hard way
 
@@ -72,6 +73,7 @@ Each of these cost real debugging time. They are not style preferences.
 | Label colors arrive with shades | Trello sends `red_dark`, `green_light`, not just `red`. `baseColor()` strips the suffix before the CSS palette lookup. |
 | `t.cards()` returns visible cards only | Not archived, and in open lists. |
 | The client library is read-only | See *Not built yet* below. |
+| There are **two** icons and they are not interchangeable | `icon-black/white.svg` are 24x24 board button icons, picked per Trello theme by `client.js`. `icon-app.svg` is the 144x144 listing icon the admin portal requires, and it gets one image with no theme variant, so it has to supply its own background. |
 | The product is **Cardsheet**; the repo stays `trello-table-view` | Renaming the repo changes the Pages URL, which breaks `BASE_URL`, the registered connector URL and the live Power-Up on the board. The repo name is invisible to users. Never "tidy up" this mismatch. |
 | Do not call it "Table View" | Trello's own Premium feature is called Table view, **and** a third-party Power-Up of that exact name already exists in the directory. Public listing guidelines reject names that clash with Trello naming. |
 

@@ -15,8 +15,27 @@ Copy the blocks below straight into the fields at <https://trello.com/apps/admin
 | Iframe connector URL | `https://miljavi96.github.io/trello-table-view/index.html` |
 | Privacy policy URL | `https://miljavi96.github.io/trello-table-view/privacy.html` |
 | Support email | `miljavi96.mj@gmail.com` |
+| Icon | `https://miljavi96.github.io/trello-table-view/icon-app.svg` |
 | Capabilities | `board-buttons` |
 | Categories | Board Utilities / Reporting (pick the closest two offered) |
+
+## Where each field lives in the admin portal
+
+Verified against the portal itself, because the documentation does not say and
+the fields are spread across four different tabs:
+
+| Field | Tab |
+| --- | --- |
+| Iframe connector URL, Icon, Categories, Email, Support contact, Author | **Basic information** |
+| `board-buttons` | **Capabilities** |
+| Overview and Description | **Listings** |
+| Privacy policy URL | **Privacy and compliance** |
+
+The Icon field states **144px by 144px, served over https**, and takes a single
+image — there is no light/dark pair as there is for the board button. That is
+why `icon-app.svg` carries its own background: it has to read on a white
+directory card and on Trello's dark chrome alike. Do not point this field at
+`icon-black.svg`; that one is 24x24 and is the board button icon.
 
 ## Positioning
 

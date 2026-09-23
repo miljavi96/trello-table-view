@@ -111,19 +111,24 @@ Retiro del endpoint v1 obsoleto
 
 The cards alone are not enough — the columns have to look inhabited.
 
-**Labels.** Five is plenty, and the palette matters because the table renders
+**Labels.** Six is plenty, and the palette matters because the table renders
 Trello's own colors:
 
 | Label | Color | Roughly how many |
 | --- | --- | --- |
 | urgente | red | 5 |
 | bloqueante | orange | 4 |
-| mejora | green | 12 |
-| técnico | blue | 10 |
-| diseño | purple | 6 |
+| documentación | yellow | 6 |
+| mejora | green | 9 |
+| técnico | blue | 8 |
+| diseño | purple | 5 |
 
-Leave about a third of the cards with no label at all. A column where every row
-is full reads as fake.
+`table.css` covers all ten Trello colors — green, yellow, orange, red, purple,
+blue, sky, lime, pink and black — so any of them renders correctly. These six
+are picked to spread across the palette rather than to use it all.
+
+Give a handful of cards two labels, the way a real board drifts, and leave
+12 to 15 with none. A column where every row is full reads as staged.
 
 **Due dates.** Spread them across two months, and put **4 or 5 in the past** so
 the overdue highlight has something to show. Mark one or two past-due cards as

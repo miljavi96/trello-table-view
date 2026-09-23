@@ -1,4 +1,4 @@
-# Trello Table View Power-Up
+# Cardsheet — a Trello Power-Up
 
 A custom Trello Power-Up that renders the board's cards as sortable, filterable
 tables. Works on the Trello Free plan, where the native Table view is not

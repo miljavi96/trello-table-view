@@ -1,4 +1,4 @@
-# Trello Table View — working notes
+# Cardsheet (Trello Power-Up) — working notes
 
 A custom Trello Power-Up that shows a board's cards as sortable, filterable
 tables. It exists because the native Table view is Premium-only and this board
@@ -69,6 +69,8 @@ Each of these cost real debugging time. They are not style preferences.
 | Label colors arrive with shades | Trello sends `red_dark`, `green_light`, not just `red`. `baseColor()` strips the suffix before the CSS palette lookup. |
 | `t.cards()` returns visible cards only | Not archived, and in open lists. |
 | The client library is read-only | See *Not built yet* below. |
+| The product is **Cardsheet**; the repo stays `trello-table-view` | Renaming the repo changes the Pages URL, which breaks `BASE_URL`, the registered connector URL and the live Power-Up on the board. The repo name is invisible to users. Never "tidy up" this mismatch. |
+| Do not call it "Table View" | Trello's own Premium feature is called Table view, **and** a third-party Power-Up of that exact name already exists in the directory. Public listing guidelines reject names that clash with Trello naming. |
 
 ## Preferences: schema and migration contract
 

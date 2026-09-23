@@ -8,12 +8,14 @@ window.TrelloPowerUp.initialize({
           dark: BASE_URL + '/icon-white.svg',
           light: BASE_URL + '/icon-black.svg'
         },
-        text: 'Table',
+        text: 'Cardsheet',
         condition: 'always',
         callback: function (t) {
           return t.modal({
             url: './table.html',
-            title: 'Cards grouped by list',
+            // Not "Cards grouped by list": grouping is a toggle, so that title
+            // was wrong every time a member turned it off.
+            title: 'Cardsheet',
             fullscreen: true
           });
         }

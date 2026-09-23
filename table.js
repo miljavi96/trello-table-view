@@ -1,4 +1,24 @@
-const t = window.TrelloPowerUp.iframe();
+// Locales live in ./strings/{locale}.json as flat key/value files. Adding a
+// language is one file plus one entry in supportedLocales — nothing else.
+const LOCALIZATION = {
+  defaultLocale: 'en',
+  supportedLocales: ['en', 'es'],
+  resourceUrl: './strings/{locale}.json'
+};
+
+const t = window.TrelloPowerUp.iframe({ localization: LOCALIZATION });
+
+// t.localizeKey is synchronous once the localizer has loaded, so call sites
+// stay plain. The one wait happens in the boot sequence at the bottom.
+// If the localizer never loaded, the key itself is returned rather than
+// throwing: a missing translation must never take the whole table down.
+const i18n = (key, data) => {
+  try {
+    return t.localizeKey(key, data);
+  } catch (error) {
+    return key;
+  }
+};
 
 const PREFS_KEY = 'tableViewPrefs';
 
@@ -58,41 +78,67 @@ const isOverdue = (card) =>
 // The base color carries the identity, so the shade suffix is dropped.
 const baseColor = (color) => String(color || 'none').split('_')[0];
 
+/* ---------- static text ---------- */
+
+// The toolbar ships with English text inline so the chrome is never blank if
+// the strings file fails. These two passes swap in the member's language.
+//
+// i18n() returns the key itself when the localizer never loaded, so a blind
+// assignment here would replace "Columns" with "menu-columns" and destroy the
+// very fallback table.html exists to provide. Only a real translation wins.
+const translated = (key) => {
+  const value = i18n(key);
+  return value && value !== key ? value : null;
+};
+
+const localizeStatic = () => {
+  document.querySelectorAll('[data-i18n]').forEach((node) => {
+    const value = translated(node.dataset.i18n);
+    if (value) node.textContent = value;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((node) => {
+    const value = translated(node.dataset.i18nPlaceholder);
+    if (value) node.setAttribute('placeholder', value);
+  });
+};
+
 /* ---------- columns ---------- */
 
+// labelKey / menuKey are translation keys, not text: COLUMNS is built at load
+// time, before the localizer is ready, so the lookup has to happen at render.
 const COLUMNS = [
   {
     // Positional, not a card field: it numbers the rows as they are painted,
     // so sorting the other columns never changes it.
     key: 'rowNumber',
-    label: 'N°',
-    menuLabel: 'Row number',
+    labelKey: 'column-row-number',
+    menuKey: 'column-row-number-menu',
     sortable: false,
     render: (card, index) => `<span class="row-number">${index + 1}</span>`
   },
   {
     key: 'idShort',
-    label: '#',
-    menuLabel: 'Card number',
+    labelKey: 'column-card-number',
+    menuKey: 'column-card-number-menu',
     sortValue: (card) => card.idShort,
     render: (card) => `<span class="muted">${escapeHtml(card.idShort)}</span>`
   },
   {
     key: 'name',
-    label: 'Card',
+    labelKey: 'column-name',
     sortValue: (card) => card.name.toLowerCase(),
     render: (card) =>
       `<a href="${escapeHtml(card.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(card.name)}</a>`
   },
   {
     key: 'list',
-    label: 'List',
+    labelKey: 'column-list',
     sortValue: (card) => listNameOf(card).toLowerCase(),
     render: (card) => escapeHtml(listNameOf(card))
   },
   {
     key: 'due',
-    label: 'Due',
+    labelKey: 'column-due',
     sortValue: (card) => (card.due ? new Date(card.due).getTime() : Number.POSITIVE_INFINITY),
     render: (card) => {
       if (!card.due) return '<span class="muted">&mdash;</span>';
@@ -102,7 +148,7 @@ const COLUMNS = [
   },
   {
     key: 'labels',
-    label: 'Labels',
+    labelKey: 'column-labels',
     sortValue: (card) => labelsText(card).toLowerCase(),
     render: (card) => {
       const labels = card.labels || [];
@@ -118,7 +164,7 @@ const COLUMNS = [
   },
   {
     key: 'members',
-    label: 'Members',
+    labelKey: 'column-members',
     sortValue: (card) => membersText(card).toLowerCase(),
     render: (card) => {
       const text = membersText(card);
@@ -169,14 +215,15 @@ const sortCards = (subset) => {
 const renderHead = () => {
   const cells = visibleColumns()
     .map((column) => {
+      const label = escapeHtml(i18n(column.labelKey));
       if (column.sortable === false) {
-        return `<th class="static">${escapeHtml(column.label)}</th>`;
+        return `<th class="static">${label}</th>`;
       }
       const active = prefs.sortKey === column.key;
       const arrow = active
         ? `<span class="arrow">${prefs.sortDir === 'asc' ? '▲' : '▼'}</span>`
         : '';
-      return `<th data-sort="${column.key}">${escapeHtml(column.label)} ${arrow}</th>`;
+      return `<th data-sort="${column.key}">${label} ${arrow}</th>`;
     })
     .join('');
   return `<thead><tr>${cells}</tr></thead>`;
@@ -185,7 +232,7 @@ const renderHead = () => {
 const renderRows = (subset) => {
   const columns = visibleColumns();
   if (!subset.length) {
-    return `<tr><td colspan="${columns.length}" class="empty">No cards</td></tr>`;
+    return `<tr><td colspan="${columns.length}" class="empty">${escapeHtml(i18n('empty-no-cards'))}</td></tr>`;
   }
   return subset
     .map(
@@ -216,12 +263,12 @@ const render = () => {
               </section>`;
           })
           .join('')
-      : '<p class="empty">Every list is hidden. Use the Lists menu to bring some back.</p>';
+      : `<p class="empty">${escapeHtml(i18n('empty-all-lists-hidden'))}</p>`;
   } else {
     dom.root.innerHTML = `<section>${renderTable(sortCards(visible))}</section>`;
   }
 
-  dom.summary.textContent = `${visible.length} of ${cards.length} cards`;
+  dom.summary.textContent = i18n('summary', { visible: visible.length, total: cards.length });
 };
 
 /* ---------- menus ---------- */
@@ -231,7 +278,7 @@ const renderColumnsMenu = () => {
     (column) => `
       <label>
         <input type="checkbox" data-column="${column.key}" ${prefs.columns.includes(column.key) ? 'checked' : ''} />
-        ${escapeHtml(column.menuLabel || column.label)}
+        ${escapeHtml(i18n(column.menuKey || column.labelKey))}
       </label>`
   ).join('');
 };
@@ -375,22 +422,47 @@ if (typeof t.subscribeToThemeChanges === 'function') {
 
 /* ---------- boot ---------- */
 
-Promise.all([
-  t.lists('id', 'name'),
-  t.cards('id', 'idShort', 'name', 'idList', 'due', 'dueComplete', 'labels', 'members', 'url'),
-  t.get('board', 'private', PREFS_KEY, DEFAULT_PREFS)
-])
-  .then(([loadedLists, loadedCards, loadedPrefs]) => {
-    lists = loadedLists;
-    cards = loadedCards;
-    listNames = new Map(lists.map((list) => [list.id, list.name]));
-    // migratePrefs must see the raw stored payload: merging the defaults in
-    // first would hand it a current version number and skip the migration.
-    prefs = { ...DEFAULT_PREFS, ...migratePrefs(loadedPrefs || {}) };
+const loadBoard = () => {
+  // Before the data, not after: the toolbar and the "Loading…" line should
+  // already be in the member's language while the board is still in flight,
+  // and they must be translated on the failure path too.
+  localizeStatic();
 
-    syncControls();
-    render();
-  })
-  .catch((error) => {
-    dom.root.innerHTML = `<p class="error">Could not load board data: ${escapeHtml(error.message)}</p>`;
-  });
+  return Promise.all([
+    t.lists('id', 'name'),
+    t.cards('id', 'idShort', 'name', 'idList', 'due', 'dueComplete', 'labels', 'members', 'url'),
+    t.get('board', 'private', PREFS_KEY, DEFAULT_PREFS)
+  ])
+    .then(([loadedLists, loadedCards, loadedPrefs]) => {
+      lists = loadedLists;
+      cards = loadedCards;
+      listNames = new Map(lists.map((list) => [list.id, list.name]));
+      // migratePrefs must see the raw stored payload: merging the defaults in
+      // first would hand it a current version number and skip the migration.
+      prefs = { ...DEFAULT_PREFS, ...migratePrefs(loadedPrefs || {}) };
+
+      syncControls();
+      render();
+    })
+    .catch((error) => {
+      dom.root.innerHTML = `<p class="error">${escapeHtml(i18n('load-error', { message: error.message }))}</p>`;
+    });
+};
+
+// The localizer has to be ready before the first render, and t.render() is
+// never called here, so it is initialized by hand.
+//
+// Guarded the same way subscribeToThemeChanges is above: if util.initLocalizer
+// is not there, calling it throws at load time and nothing renders at all.
+// Losing the translations is survivable, losing the table is not.
+const util = window.TrelloPowerUp.util;
+const localizerReady =
+  util && typeof util.initLocalizer === 'function'
+    ? util.initLocalizer(window.locale || LOCALIZATION.defaultLocale, {
+        localization: LOCALIZATION
+      })
+    : Promise.reject(new Error('localizer unavailable'));
+
+// Both handlers are loadBoard on purpose: failing to load the strings must
+// still boot the board. The English text in table.html carries the toolbar.
+localizerReady.then(loadBoard, loadBoard);

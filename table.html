@@ -8,20 +8,32 @@
     <link rel="stylesheet" href="./table.css" />
   </head>
   <body>
+    <!--
+      The English text below is not decoration: it is the fallback rendered if
+      the strings file fails to load. data-i18n keys replace it once the
+      localizer is ready. Never leave one of these elements empty.
+    -->
     <header class="toolbar">
-      <input id="search" class="search" type="search" placeholder="Filter cards&hellip;" autocomplete="off" />
+      <input
+        id="search"
+        class="search"
+        type="search"
+        placeholder="Filter cards&hellip;"
+        data-i18n-placeholder="filter-placeholder"
+        autocomplete="off"
+      />
 
       <details class="menu" id="menu-columns">
-        <summary>Columns</summary>
+        <summary data-i18n="menu-columns">Columns</summary>
         <div class="menu-body" id="columns-body"></div>
       </details>
 
       <details class="menu" id="menu-lists">
-        <summary>Lists</summary>
+        <summary data-i18n="menu-lists">Lists</summary>
         <div class="menu-body">
           <div class="menu-actions">
-            <button type="button" data-lists="all">All</button>
-            <button type="button" data-lists="none">None</button>
+            <button type="button" data-lists="all" data-i18n="lists-all">All</button>
+            <button type="button" data-lists="none" data-i18n="lists-none">None</button>
           </div>
           <div id="lists-body"></div>
         </div>
@@ -29,15 +41,15 @@
 
       <label class="toggle">
         <input id="group-by-list" type="checkbox" />
-        Group by list
+        <span data-i18n="group-by-list">Group by list</span>
       </label>
 
       <span class="spacer"></span>
       <span id="summary" class="summary"></span>
-      <button id="reset" type="button" class="reset">Reset</button>
+      <button id="reset" type="button" class="reset" data-i18n="reset">Reset</button>
     </header>
 
-    <main id="root" class="content">Loading&hellip;</main>
+    <main id="root" class="content" data-i18n="loading">Loading&hellip;</main>
 
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
     <script src="./table.js"></script>

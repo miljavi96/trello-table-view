@@ -1,0 +1,23 @@
+{
+  "filter-placeholder": "Filtrar tarjetas…",
+  "menu-columns": "Columnas",
+  "menu-lists": "Listas",
+  "lists-all": "Todas",
+  "lists-none": "Ninguna",
+  "group-by-list": "Agrupar por lista",
+  "reset": "Restablecer",
+  "loading": "Cargando…",
+  "column-row-number": "N°",
+  "column-row-number-menu": "Número de fila",
+  "column-card-number": "#",
+  "column-card-number-menu": "Número de tarjeta",
+  "column-name": "Tarjeta",
+  "column-list": "Lista",
+  "column-due": "Vencimiento",
+  "column-labels": "Etiquetas",
+  "column-members": "Miembros",
+  "empty-no-cards": "Sin tarjetas",
+  "empty-all-lists-hidden": "Todas las listas están ocultas. Usa el menú Listas para volver a mostrar alguna.",
+  "summary": "{visible} de {total} tarjetas",
+  "load-error": "No se pudieron cargar los datos del tablero: {message}"
+}

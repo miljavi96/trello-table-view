@@ -1,0 +1,23 @@
+{
+  "filter-placeholder": "Filter cards…",
+  "menu-columns": "Columns",
+  "menu-lists": "Lists",
+  "lists-all": "All",
+  "lists-none": "None",
+  "group-by-list": "Group by list",
+  "reset": "Reset",
+  "loading": "Loading…",
+  "column-row-number": "N°",
+  "column-row-number-menu": "Row number",
+  "column-card-number": "#",
+  "column-card-number-menu": "Card number",
+  "column-name": "Card",
+  "column-list": "List",
+  "column-due": "Due",
+  "column-labels": "Labels",
+  "column-members": "Members",
+  "empty-no-cards": "No cards",
+  "empty-all-lists-hidden": "Every list is hidden. Use the Lists menu to bring some back.",
+  "summary": "{visible} of {total} cards",
+  "load-error": "Could not load board data: {message}"
+}

@@ -52,7 +52,8 @@ Do not redo any of this; it is already set up.
 | `client.js` | registers the `board-buttons` capability, opens the modal |
 | `table.html` | modal markup: toolbar + `#root` container |
 | `table.css` | theme tokens, layout, label palette |
-| `table.js` | data loading, filtering, sorting, preferences |
+| `table.js` | data loading, filtering, sorting, preferences, localization |
+| `strings/*.json` | one flat key/value file per locale |
 | `tests/smoke.js` | headless render test with stubbed Trello + DOM |
 | `icon-*.svg` | board button icons, light and dark chrome |
 
@@ -99,6 +100,34 @@ visible by reading the code:
   column, switching back on the ones the member had deliberately turned off.
   Only columns introduced *after* the stored version may be added.
 
+## Localization: schema and contract
+
+Strings live in `strings/{locale}.json`, flat key/value, with `{placeholder}`
+substitution. Trello's own localizer loads them — there is no custom i18n
+layer. `t.localizeKey` is **synchronous**, but only after the localizer has
+loaded, which is why `table.js` boots inside
+`TrelloPowerUp.util.initLocalizer(...)` instead of calling `t.render()`.
+
+**Adding a language requires two edits, not one:**
+
+1. Add `strings/<locale>.json` with **every** key that `en.json` has.
+2. Add the locale to `supportedLocales` in `LOCALIZATION` in `table.js`.
+
+`tests/smoke.js` enforces both halves: it loads the real JSON files, fails if
+two locales disagree on their key sets, and fails if `table.js` ever asks for a
+key a locale does not define. A forgotten string cannot reach the directory.
+
+Two things that look like mistakes and are not:
+
+- **`COLUMNS` stores `labelKey`, not text.** `COLUMNS` is built at load time,
+  before the localizer is ready, so the lookup has to happen at render time.
+- **The English text in `table.html` is not decoration.** It is the fallback
+  rendered if the strings file fails to load. Never empty those elements, and
+  never assign a raw key over them.
+
+`N°` and `#` are deliberately identical across locales: they are symbols, not
+words.
+
 ## Columns
 
 Two numeric columns exist and they are not the same thing:
@@ -121,7 +150,12 @@ node tests/smoke.js
 
 It covers: row numbers stable under asc and desc sorting, the `N°` header not
 being sortable, migration preserving previous choices, grouping, label shade
-normalization, overdue vs. complete, and the card counter.
+normalization, overdue vs. complete, the card counter, locale key parity and
+Spanish rendering, and survival when the localizer never loads.
+
+The translation-coverage assertion runs **last on purpose**. It inspects the
+keys every locale actually requested, so moving it earlier silently narrows it
+to whichever locale happened to have rendered by then.
 
 Add an assertion here before fixing any bug found from now on. Both bugs above
 were found this way and neither was visible by reading.

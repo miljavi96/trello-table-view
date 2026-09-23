@@ -19,6 +19,8 @@ available.
 - Follows Trello's light and dark color theme.
 - Preferences persist per board, private to the member, through Trello's
   own storage API, and are migrated forward when a new column ships.
+- Available in English and Spanish, following the member's Trello language.
+  Adding a language is one JSON file and one line.
 
 ## Files
 
@@ -28,7 +30,8 @@ available.
 | `client.js` | registers the `board-buttons` capability |
 | `table.html` | modal markup: toolbar and table container |
 | `table.css` | theme tokens and layout |
-| `table.js` | data loading, filtering, sorting, preferences |
+| `table.js` | data loading, filtering, sorting, preferences, localization |
+| `strings/*.json` | one flat key/value file per locale |
 | `icon-black.svg` / `icon-white.svg` | board button icons (light / dark chrome) |
 
 ## Setup

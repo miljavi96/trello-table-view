@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Policy &mdash; Cardsheet for Trello</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #172b4d;
+        --muted: #5e6c84;
+        --bg: #ffffff;
+        --rule: #dfe1e6;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #b6c2cf;
+          --muted: #8c9bab;
+          --bg: #1d2125;
+          --rule: #2c333a;
+        }
+      }
+
+      body {
+        margin: 0 auto;
+        max-width: 42rem;
+        padding: 2.5rem 1.25rem 4rem;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        margin: 2rem 0 0.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--rule);
+        font-size: 1.1rem;
+      }
+
+      .updated {
+        margin: 0 0 2rem;
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+
+      ul {
+        padding-left: 1.25rem;
+      }
+
+      code {
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        background: rgba(137, 147, 164, 0.2);
+        font-size: 0.9em;
+      }
+
+      a {
+        color: inherit;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Privacy Policy</h1>
+    <p class="updated">Cardsheet for Trello &middot; Last updated 23 September 2026</p>
+
+    <p>
+      Cardsheet is a Trello Power-Up that renders the cards of a board as
+      sortable, filterable tables. This policy describes exactly what the
+      Power-Up does with data. The short version: it has no server of its own,
+      so there is nowhere for your data to be sent.
+    </p>
+
+    <h2>No backend, no account</h2>
+    <p>
+      Cardsheet is a set of static files (HTML, CSS and JavaScript) served over
+      HTTPS. All of its logic runs inside your own browser, in the iframe that
+      Trello provides. There is no application server, no database, no user
+      account and no login. The Power-Up does not ask for, receive or store a
+      Trello API token.
+    </p>
+
+    <h2>What board data it reads</h2>
+    <p>
+      To draw the table, the Power-Up asks Trello's own client library for the
+      data of the board you are currently viewing:
+    </p>
+    <ul>
+      <li>list names and identifiers;</li>
+      <li>card name, card number, list, due date and completion state;</li>
+      <li>card labels and their colors;</li>
+      <li>the display name or username of members assigned to a card.</li>
+    </ul>
+    <p>
+      This data is held in the browser's memory only for as long as the table is
+      open, and is used solely to render what you see on screen. It is never
+      transmitted to the author of this Power-Up, and never to any third party.
+      Closing the table discards it.
+    </p>
+
+    <h2>What it writes</h2>
+    <p>
+      Cardsheet never modifies your cards, lists or boards. It does not create,
+      edit, move, archive or delete anything in Trello.
+    </p>
+    <p>
+      The only thing it saves is your own display preferences: which columns and
+      lists are visible, the sort order, and whether rows are grouped by list.
+      These are stored through Trello's own storage API, using
+      <code>t.set('board', 'private', ...)</code>. That means they are kept on
+      Trello's infrastructure, scoped to a single board and visible only to your
+      own member account. They never leave Trello, and the author of this
+      Power-Up cannot read them.
+    </p>
+    <p>
+      The Power-Up deliberately does not use cookies,
+      <code>localStorage</code>, <code>sessionStorage</code> or IndexedDB.
+    </p>
+
+    <h2>No tracking</h2>
+    <p>
+      There is no analytics, no telemetry, no advertising, no fingerprinting and
+      no third-party tracking script of any kind. No profile of you is built and
+      no data about you is ever sold, rented or shared.
+    </p>
+
+    <h2>Hosting and network requests</h2>
+    <p>
+      The static files are hosted on GitHub Pages. Like any web host, GitHub
+      serves those files in response to a request from your browser and may
+      record standard technical request data, such as an IP address, in its own
+      server logs. That processing is governed by
+      <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's Privacy Statement</a>,
+      and the author of this Power-Up has no access to those logs.
+    </p>
+    <p>
+      The Power-Up also loads Trello's own client library and stylesheet from
+      <code>p.trellocdn.com</code>, which is required for any Power-Up to
+      function and is governed by
+      <a href="https://www.atlassian.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Atlassian's Privacy Policy</a>.
+      No other external request is made.
+    </p>
+
+    <h2>Removing your data</h2>
+    <p>
+      Because the only stored data is the preference record held inside Trello,
+      disabling the Power-Up on a board removes the Power-Up's access to it. No
+      copy exists anywhere else for the author to delete.
+    </p>
+
+    <h2>Source code</h2>
+    <p>
+      Cardsheet is open source. Every claim on this page can be verified by
+      reading the code at
+      <a href="https://github.com/miljavi96/trello-table-view" target="_blank" rel="noopener noreferrer">github.com/miljavi96/trello-table-view</a>.
+    </p>
+
+    <h2>Changes to this policy</h2>
+    <p>
+      If the Power-Up ever begins handling data differently, this page will be
+      updated and the date at the top will change.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions about this policy or about the Power-Up can be sent to
+      <a href="mailto:REPLACE_WITH_SUPPORT_EMAIL">REPLACE_WITH_SUPPORT_EMAIL</a>.
+    </p>
+  </body>
+</html>

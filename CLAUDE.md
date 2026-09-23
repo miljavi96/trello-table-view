@@ -54,6 +54,8 @@ Do not redo any of this; it is already set up.
 | `table.css` | theme tokens, layout, label palette |
 | `table.js` | data loading, filtering, sorting, preferences, localization |
 | `strings/*.json` | one flat key/value file per locale |
+| `privacy.html` | privacy policy; a mandatory field of the public listing |
+| `LISTING.md` | submission kit for the Power-Up directory |
 | `tests/smoke.js` | headless render test with stubbed Trello + DOM |
 | `icon-*.svg` | board button icons, light and dark chrome |
 

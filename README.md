@@ -32,6 +32,7 @@ available.
 | `table.css` | theme tokens and layout |
 | `table.js` | data loading, filtering, sorting, preferences, localization |
 | `strings/*.json` | one flat key/value file per locale |
+| `privacy.html` | privacy policy served alongside the Power-Up |
 | `icon-black.svg` / `icon-white.svg` | board button icons (light / dark chrome) |
 
 ## Setup
